@@ -1,0 +1,56 @@
+// create a global variabled called for all pins
+pins <- {
+  "1": hardware.pin1,
+  "2": hardware.pin2,
+  "5": hardware.pin5,
+  "7": hardware.pin7,
+  "8": hardware.pin8,
+  "9": hardware.pin9,
+};
+
+function digitalWrite(args) {
+  pins[args.pin].configure(DIGITAL_OUT);
+  pins[args.pin].write(args.value.tointeger());
+
+  agent.send("response", { "data": null });
+}
+
+function digitalRead(args) {
+  pins[args.pin].configure(DIGITAL_IN);
+  local readVal = pins[args.pin].read();
+
+  agent.send("response", { "data": readVal });
+}
+
+function analogWrite(args) {
+  pins[args.pin].configure(ANALOG_OUT);
+  pins[args.pin].write(args.value.tofloat());
+
+  agent.send("response", { "data": null });
+}
+
+function analogRead(args) {
+  pins[args.pin].configure(ANALOG_IN);
+  local readVal = pins[args.pin].read();
+
+  agent.send("response", { "data": readVal });
+}
+
+function pwmWrite(args) {
+  local freq = 0.02;
+
+  if ("freq" in args) {
+    freq = args.freq;
+  }
+
+  pins[args.pin].configure(PWM_OUT, freq, 1);
+  pins[args.pin].write(args.value.tofloat());
+
+  agent.send("response", { "data": null });
+}
+
+agent.on("digitalWrite", digitalWrite);
+agent.on("digitalRead", digitalRead);
+agent.on("analogWrite", analogWrite);
+agent.on("analogRead", analogRead);
+agent.on("pwmWrite", pwmWrite);
