@@ -1,0 +1,35 @@
+{
+  "name": "cylon-imp",
+  "version": "0.1.0",
+  "main": "lib/cylon-imp.js",
+  "description": "Cylon module for Imp",
+
+  "homepage": "http://cylonjs.com",
+  "bugs": "http://cylonjs.com/hybridgroup/cylon-imp/issues",
+
+  "author": "Your Name Here <your@email.here> (your.url.here)",
+
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hybridgroup/cylon-imp"
+  },
+
+  "license": "your license type here",
+
+  "devDependencies": {
+    "sinon-chai": "2.6.0",
+    "chai":       "1.9.2",
+    "mocha":      "1.21.5",
+    "sinon":      "1.10.3"
+  },
+
+  "peerDependencies": {
+    "cylon": ">=0.21.1 < 1"
+  },
+
+  "dependencies": {
+    "cylon":       ">= 0.21.2 < 1",
+    "cylon-gpio":  ">= 0.20.0 < 1",
+    "restler": ">= 3.2.2"
+  }
+}
