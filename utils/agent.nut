@@ -10,12 +10,19 @@ function requestHandler(request, response) {
 
     if ("mode" in request.query) {
       local value = ("value" in request.query) ? request.query.value : 0;
+      local pin = ("pin" in request.query) ? request.query.pin : 0;
+      local address = ("address" in request.query) ? request.query.address : null;
+      local buffer = ("buffer" in request.query) ? request.query.buffer : null;
+      local bytes = ("bytes" in request.query) ? request.query.bytes : null;
 
       device.send(request.query.mode, {
         "mode": request.query.mode,
-        "pin": request.query.pin,
-        "value": value
-      });
+        "pin": pin,
+        "value": value,
+        "address": address,
+        "buffer": buffer,
+        "bytes": bytes
+      })
     }
     // send a response back saying everything was OK.
     //response.send(200, jsonRes);
@@ -34,4 +41,3 @@ http.onrequest(requestHandler);
 
 // register device response listner for digital and analog reads
 device.on("response", responseHandler);
-
