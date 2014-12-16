@@ -1,4 +1,4 @@
-// Create a global variabled called led and assign pin9 to it
+// create a global variabled called led and assign pin9 to it
 pins <- {
   "1": hardware.pin1,
   "2": hardware.pin2,
@@ -57,19 +57,41 @@ function i2cWrite(args) {
   local binaryAddress = 0x00;
   local binaryBuffer = "";
 
-  server.log("address:" + args.address);
   binaryAddress += args.address.tointeger() << 1;
 
   foreach(val in buffer){
     binaryBuffer += val.tointeger().tochar();
   }
 
-  server.log(binaryAddress);
-  server.log(binaryBuffer);
-
   i2c.write(binaryAddress, binaryBuffer);
 
   agent.send("response", { "data": null });
+}
+
+function i2cRead(args) {
+  hardware.i2c89.configure(CLOCK_SPEED_400_KHZ);
+  local i2c = hardware.i2c89;
+
+  local buffer = split(args.buffer, ",");
+  local binaryAddress = 0x00;
+  local binaryBuffer = "";
+  local bytesLength = args.bytes.tointeger();
+
+  binaryAddress += args.address.tointeger() << 1;
+
+  foreach(val in buffer){
+    binaryBuffer += val.tointeger().tochar();
+  }
+
+  //i2c.write(binaryAddress, binaryBuffer);
+  local data = i2c.read(binaryAddress, binaryBuffer, bytesLength)
+  local dataArray = [];
+
+  foreach(val in data) {
+    dataArray.push(val);
+  }
+
+  agent.send("response", { "data": dataArray });
 }
 
 agent.on("digitalWrite", digitalWrite);
@@ -78,3 +100,4 @@ agent.on("analogWrite", analogWrite);
 agent.on("analogRead", analogRead);
 agent.on("pwmWrite", pwmWrite);
 agent.on("i2cWrite", i2cWrite);
+agent.on("i2cRead", i2cRead);
