@@ -1,4 +1,4 @@
-// create a global variabled called for all pins
+// Create a global variabled called led and assign pin9 to it
 pins <- {
   "1": hardware.pin1,
   "2": hardware.pin2,
@@ -49,8 +49,32 @@ function pwmWrite(args) {
   agent.send("response", { "data": null });
 }
 
+function i2cWrite(args) {
+  hardware.i2c89.configure(CLOCK_SPEED_400_KHZ);
+  local i2c = hardware.i2c89;
+
+  local buffer = split(args.buffer, ",");
+  local binaryAddress = 0x00;
+  local binaryBuffer = "";
+
+  server.log("address:" + args.address);
+  binaryAddress += args.address.tointeger() << 1;
+
+  foreach(val in buffer){
+    binaryBuffer += val.tointeger().tochar();
+  }
+
+  server.log(binaryAddress);
+  server.log(binaryBuffer);
+
+  i2c.write(binaryAddress, binaryBuffer);
+
+  agent.send("response", { "data": null });
+}
+
 agent.on("digitalWrite", digitalWrite);
 agent.on("digitalRead", digitalRead);
 agent.on("analogWrite", analogWrite);
 agent.on("analogRead", analogRead);
 agent.on("pwmWrite", pwmWrite);
+agent.on("i2cWrite", i2cWrite);
