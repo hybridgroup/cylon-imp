@@ -33,3 +33,5 @@ Cylon.config({
 });
 
 Cylon.Logger.setup(false);
+
+chai.use(sinonChai);

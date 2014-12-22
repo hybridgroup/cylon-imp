@@ -17,9 +17,16 @@ describe("Cylon.Imp", function() {
     });
   });
 
+  describe("#drivers", function() {
+    it('is an array of supplied drivers', function() {
+      expect(module.drivers).to.be.eql([]);
+    });
+  });
+
   describe("#adaptor", function() {
     it("returns an instance of the Adaptor", function() {
-      expect(module.adaptor()).to.be.instanceOf(Adaptor);
+      var adaptor = module.adaptor({ adaptor: "imp", agentUrl: '' });
+      expect(adaptor).to.be.an.instanceOf(Adaptor);
     });
   });
 });
