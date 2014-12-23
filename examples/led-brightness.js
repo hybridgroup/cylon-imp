@@ -1,6 +1,6 @@
-var Cylon = require('cylon');
+var cylon = require('cylon');
 
-Cylon.robot({
+cylon.robot({
   connections: {
     imp: { adaptor: 'imp', agentUrl: 'https://agent.electricimp.com/79QYWvoV21bu', module: 'cylon-imp' }
   },
@@ -8,8 +8,8 @@ Cylon.robot({
   device: { name: 'led', driver: 'led', pin: 1 },
 
   work: function(my){
-    brightness = 0;
-    fade = 20;
+    var brightness = 0;
+    var fade = 20;
 
     every((1).seconds(), function(){
       brightness += fade;
@@ -18,7 +18,7 @@ Cylon.robot({
 
       my.led.brightness(brightness);
 
-      fade = ((brightness == 0) || (brightness == 255)) ? -fade : fade;
+      fade = ((brightness === 0) || (brightness === 255)) ? -fade : fade;
     });
   }
 }).start();

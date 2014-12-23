@@ -1,6 +1,6 @@
-var Cylon = require('cylon');
+var cylon = require('cylon');
 
-Cylon.robot({
+cylon.robot({
   connections: {
     imp: { adaptor: 'imp', agentUrl: 'https://agent.electricimp.com/79QYWvoV21bu', module: 'cylon-imp' }
   },
@@ -12,10 +12,14 @@ Cylon.robot({
 
   work: function(my) {
     my.button.on('release', function(err, data) {
+      console.log('err ->', err);
+      console.log('data ->', data);
       console.log('Button released:');
     });
 
     my.button.on('press', function(err, data) {
+      console.log('err ->', err);
+      console.log('data ->', data);
       console.log('Button pressed:');
     });
 
