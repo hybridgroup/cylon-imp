@@ -103,7 +103,8 @@ describe("Cylon.Adaptors.Imp", function() {
         query: {
           mode: 'digitalWrite',
           pin: 1,
-          value: 1
+          value: 1,
+          period: null
         }
       };
 
@@ -355,7 +356,8 @@ describe("Cylon.Adaptors.Imp", function() {
         query: {
           mode: 'analogWrite',
           pin: 1,
-          value: 0.5
+          value: 0.5,
+          period: null
         }
       };
 
@@ -479,5 +481,4 @@ describe("Cylon.Adaptors.Imp", function() {
       });
     });
   });
-   
 });
