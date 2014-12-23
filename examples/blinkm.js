@@ -1,6 +1,6 @@
-var Cylon = require('cylon');
+var cylon = require('cylon');
 
-Cylon.robot({
+cylon.robot({
 
   connections: {
     imp: { adaptor: 'imp', agentUrl: 'https://agent.electricimp.com/79QYWvoV21bu', module: 'cylon-imp' }
@@ -13,7 +13,7 @@ Cylon.robot({
 
     setTimeout(function() {
       my.blinkm.getFirmware(function(err, version) {
-        Cylon.Logger.info("Started BlinkM version " + version);
+        cylon.Logger.info("Started BlinkM version " + version);
       });
     }, 2000);
 
