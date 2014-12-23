@@ -382,10 +382,11 @@ describe("Cylon.Adaptors.Imp", function() {
     var callback, res;
 
     beforeEach(function(){
-      res = { on: spy() };
+      res = { on: stub() };
       callback = spy();
 
       stub(rest, 'get').returns(res);
+      res.on.yields({ data: 1 }, null);
 
       adaptor.i2cWrite(0x09, 0xfe, [0xaa, 0xbb, 0xcc], callback);
     });
@@ -408,6 +409,12 @@ describe("Cylon.Adaptors.Imp", function() {
       };
 
       expect(rest.get).to.be.calledWith('https://agent.electricimp.com/123456789', params);
+    });
+
+    context('if the call returns data', function() {
+      it("triggers an error event", function() {
+        expect(callback).to.be.calledOnce;
+      });
     });
 
     context('if the call returns an error', function() {
