@@ -317,7 +317,8 @@ Cylon.robot({
 
 ## Release History
 
-None yet...
+0.1.1   | Update package info
+0.1.0   | Initial release for ongoing development
 
 ## License
 
