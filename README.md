@@ -9,27 +9,128 @@ https://github.com/hybridgroup/cylon
 
 [![Build Status](https://secure.travis-ci.org/hybridgroup/cylon-imp.png?branch=master)](http://travis-ci.org/hybridgroup/cylon-imp) [![Code Climate](https://codeclimate.com/github/hybridgroup/cylon-imp/badges/gpa.svg)](https://codeclimate.com/github/hybridgroup/cylon-imp) [![Test Coverage](https://codeclimate.com/github/hybridgroup/cylon-imp/badges/coverage.svg)](https://codeclimate.com/github/hybridgroup/cylon-imp)
 
-## Getting Started
+## How to Install
 
-Install the module with: `npm install cylon-imp`
+Install the module with:
+
+    $ npm install cylon-imp
 
 You'll also need to setup your Imp, for this you can go here: [Electric Imp Getting Started](https://electricimp.com/docs/gettingstarted/)
 
-Once you have completed the Getting Started process and have a connected Imp, you need to go to the [Electric Imp IDE](https://ide.electricimp.com/ide) page
-and create a new model that you can attach your Imp to. You can check how that process works in details here:
+Once you have completed the Getting Started process and have a connected Imp, you need to go to the [Electric Imp IDE](https://ide.electricimp.com/ide) page and create a new model that you can attach your Imp to. You can check how that process works in detail on the [Electric Imp IDE docs](https://electricimp.com/docs/gettingstarted/ide/)
 
-[Electric Imp IDE docs](https://electricimp.com/docs/gettingstarted/ide/)
+## How to Use
 
-## Installing Agent and Device code to control the Imp with Cylon
+### Blink LED: Digital GPIO
+
+```javascript
+var Cylon = require('cylon');
+
+Cylon.robot({
+  connections: {
+    imp: { adaptor: 'imp', agentUrl: 'https://agent.electricimp.com/45QYZvoB41bu', module: 'cylon-imp' }
+  },
+
+  devices: {
+    led: { driver: 'led', pin: 1 }
+  },
+
+  work: function(my) {
+    every((1).second(), function() {
+      my.led.toggle();
+    });
+  }
+}).start()
+```
+
+### Control LED Brightness: PWM Output
+
+```javascript
+var Cylon = require('cylon');
+
+Cylon.robot({
+  connections: {
+    imp: { adaptor: 'imp', agentUrl: 'https://agent.electricimp.com/45QYZvoB41bu', module: 'cylon-imp' }
+  },
+
+  devices: {
+    led: { driver: 'led', pin: 1 }
+  },
+
+  work: function(my){
+    brightness = 0;
+    fade = 20;
+
+    every((1).seconds(), function(){
+      brightness += fade;
+      brightness = (brightness > 255) ? 255 : brightness;
+      brightness = (brightness < 0) ? 0 : brightness;
+
+      my.led.brightness(brightness);
+
+      fade = ((brightness == 0) || (brightness == 255)) ? -fade : fade;
+    });
+  }
+}).start();
+```
+
+### Control I2C Devices: I2C Interface
+
+```javascript
+var Cylon = require('cylon');
+
+Cylon.robot({
+
+  connections: {
+    imp: { adaptor: 'imp', agentUrl: 'https://agent.electricimp.com/45QYZvoB41bu', module: 'cylon-imp' }
+  },
+
+  devices: {
+    blinkm: { driver: 'blinkm' }
+  },
+
+  work: function(my) {
+    my.blinkm.stopScript();
+
+    setTimeout(function() {
+      my.blinkm.getFirmware(function(err, version) {
+        Cylon.Logger.info("Started BlinkM version " + version);
+      });
+    }, 2000);
+
+    console.log('Go to RGB');
+    my.blinkm.goToRGB(255,0,0);
+
+    console.log('Get RGB ');
+    my.blinkm.getRGBColor(function(err, data){
+      console.log("Starting Color: ", data);
+    });
+
+    console.log('Go to Magenta ');
+    my.blinkm.fadeToRandomRGB(0, 0, 255);
+
+    every((2).seconds(), function() {
+      my.blinkm.getRGBColor(function(err, data){
+        console.log("Current Color: ", data);
+      });
+      my.blinkm.fadeToRandomRGB(128, 128, 128);
+    });
+  }
+}).start();
+```
+
+## How to Connect
 
 We need to setup the Agent code and Device code so we can control the Imp over the internet. First we need to setup the agent that
 will serve as the endpoint URL for our Imp.
 
 ### Setting up the Agent
 
+<img src="http://cylonjs.com/images/screenshots/imp-agent-screenshot.png" style="margin-top: 15px; width: 100%">
+
 Inside the Electric Imp IDE, on the left side (for the default layout), you'll find the Agent section, you need to paste the following code:
 
-```squirrel
+```c
 // Log the URLs we need
 server.log("Agent URL: " + http.agenturl());
 
@@ -80,9 +181,11 @@ this code in the utils section of this repo.
 
 ### Setting up the Device firmware
 
+<img src="http://cylonjs.com/images/screenshots/imp-device-screenshot.png" style="margin-top: 15px; width: 100%">
+
 Same as with the Agent code we do this inside the Electric Imp IDE, but now on the right side viewport, there you'll see the Device section, same as before paste the following code:
 
-```squirrel
+```c
 // create a global variabled called led and assign pin9 to it
 pins <- {
   "1": hardware.pin1,
@@ -196,17 +299,12 @@ on the top of the IDE and you should be ready to go.
 
 ### Talking to your imp through the Agent URL
 
-In order to use Cylon to communicate with your Imp we'll need the agent URL. You can find this URL right above the Agent 
-viewport of the IDE, alternatively you can look for it in the log after you click `Build and Run`.
+In order to use Cylon to communicate with your Imp we'll need the agent URL. You can find this URL right above the Agent viewport of the IDE, alternatively you can look for it in the log after you click `Build and Run`.
 
-Once you have this url, which should like something along the lines of `https://agent.electricimp.com/45QYZvoB41bu`, you can 
-pass it along the adaptor parameters in your Cylon code.
+Once you have this url, which should like something along the lines of `https://agent.electricimp.com/45QYZvoB41bu`, you can pass it along the adaptor parameters in your Cylon code.
 
-In the following examples you can see exactly how that looks like.
+This is how you setup the connection using the agent url in Cylon:
 
-## Examples
-
-### Blink LED: Digital GPIO
 ```javascript
 var Cylon = require('cylon');
 
@@ -215,91 +313,15 @@ Cylon.robot({
     imp: { adaptor: 'imp', agentUrl: 'https://agent.electricimp.com/45QYZvoB41bu', module: 'cylon-imp' }
   },
 
-  devices: {
-    led: { driver: 'led', pin: 1 }
-  },
-
-  work: function(my) {
-    every((1).second(), function() {
-      my.led.toggle();
-    });
-  }
+// Rest of code ...
 }).start()
 ```
 
-### Control LED Brightness: PWM Output
-```javascript
-var Cylon = require('cylon');
+## Documentation
 
-Cylon.robot({
-  connections: {
-    imp: { adaptor: 'imp', agentUrl: 'https://agent.electricimp.com/45QYZvoB41bu', module: 'cylon-imp' }
-  },
+We're busy adding documentation to our web site at http://cylonjs.com/ please check there as we continue to work on Cylon.js
 
-  devices: {
-    led: { driver: 'led', pin: 1 }
-  },
-
-  work: function(my){
-    brightness = 0;
-    fade = 20;
-
-    every((1).seconds(), function(){
-      brightness += fade;
-      brightness = (brightness > 255) ? 255 : brightness;
-      brightness = (brightness < 0) ? 0 : brightness;
-
-      my.led.brightness(brightness);
-
-      fade = ((brightness == 0) || (brightness == 255)) ? -fade : fade;
-    });
-  }
-}).start();
-```
-
-### Control I2C Devices: I2C Interface
-```javascript
-var Cylon = require('cylon');
-
-Cylon.robot({
-
-  connections: {
-    imp: { adaptor: 'imp', agentUrl: 'https://agent.electricimp.com/45QYZvoB41bu', module: 'cylon-imp' }
-  },
-
-  devices: {
-    blinkm: { driver: 'blinkm' }
-  },
-
-  work: function(my) {
-    my.blinkm.stopScript();
-
-    setTimeout(function() {
-      my.blinkm.getFirmware(function(err, version) {
-        Cylon.Logger.info("Started BlinkM version " + version);
-      });
-    }, 2000);
-
-    console.log('Go to RGB');
-    my.blinkm.goToRGB(255,0,0);
-
-    console.log('Get RGB ');
-    my.blinkm.getRGBColor(function(err, data){
-      console.log("Starting Color: ", data);
-    });
-
-    console.log('Go to Magenta ');
-    my.blinkm.fadeToRandomRGB(0, 0, 255);
-
-    every((2).seconds(), function() {
-      my.blinkm.getRGBColor(function(err, data){
-        console.log("Current Color: ", data);
-      });
-      my.blinkm.fadeToRandomRGB(128, 128, 128);
-    });
-  }
-}).start();
-```
+Thank you!
 
 ## Contributing
 
