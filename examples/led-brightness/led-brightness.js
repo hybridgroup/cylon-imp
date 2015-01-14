@@ -1,11 +1,16 @@
-var cylon = require('cylon');
+"use strict";
 
-cylon.robot({
+var Cylon = require("cylon");
+
+Cylon.robot({
   connections: {
-    imp: { adaptor: 'imp', agentUrl: 'https://agent.electricimp.com/79QYWvoV21bu', module: 'cylon-imp' }
+    imp: {
+      adaptor: "imp",
+      agentUrl: "https://agent.electricimp.com/79QYWvoV21bu"
+    }
   },
 
-  device: { name: 'led', driver: 'led', pin: 1 },
+  device: { name: "led", driver: "led", pin: 1 },
 
   work: function(my){
     var brightness = 0;

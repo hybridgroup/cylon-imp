@@ -1,45 +1,47 @@
-'use strict';
+// jshint expr:true
+"use strict";
 
-var Cylon = require('cylon');
+var Cylon = require("cylon");
 
-var Adaptor = source('adaptor'),
-    rest = require('restler');
+var Adaptor = source("adaptor"),
+    rest = require("restler");
 
 describe("Cylon.Adaptors.Imp", function() {
   var adaptor;
 
   beforeEach(function() {
     adaptor = new Adaptor({
-      agentUrl: 'https://agent.electricimp.com/123456789',
+      agentUrl: "https://agent.electricimp.com/123456789",
       readInterval: 1000
     });
   });
 
   describe("#constructor", function() {
-    var error = "No agentUrl provided for Imp adaptor. You need to provide one in the in the connection. Cannot proceed";
+    var error = "No agentUrl provided for Imp adaptor. Cannot proceed";
 
-    it('sets @agentUrl to the provided value', function(){
-      expect(adaptor.agentUrl).to.be.eql('https://agent.electricimp.com/123456789');
+    it("sets @agentUrl to the provided value", function(){
+      var url = "https://agent.electricimp.com/123456789";
+      expect(adaptor.agentUrl).to.be.eql(url);
     });
 
-    it('sets @readInterval to the provided value', function() {
+    it("sets @readInterval to the provided value", function() {
       expect(adaptor.readInterval).to.be.eql(1000);
     });
 
-    it('sets @readInterval to 2s by default', function() {
-      adaptor = new Adaptor({ agentUrl: '' });
+    it("sets @readInterval to 2s by default", function() {
+      adaptor = new Adaptor({ agentUrl: "" });
       expect(adaptor.readInterval).to.be.eql(2000);
     });
 
     context("if no agentUrl is specified", function() {
       it("throws an error", function() {
-        var fn = function() { new Adaptor({ }); };
+        var fn = function() { return new Adaptor({ }); };
         expect(fn).to.throw(error);
       });
     });
   });
 
-  describe('#connect', function() {
+  describe("#connect", function() {
     var callback;
 
     beforeEach(function() {
@@ -53,7 +55,7 @@ describe("Cylon.Adaptors.Imp", function() {
     });
   });
 
-  describe('#disconnect', function() {
+  describe("#disconnect", function() {
     var callback;
 
     beforeEach(function() {
@@ -69,23 +71,23 @@ describe("Cylon.Adaptors.Imp", function() {
 
   describe("#commands", function() {
     it("is an array of Imp commands", function() {
-      expect(adaptor.commands).to.be.an('array');
+      expect(adaptor.commands).to.be.an("array");
 
       adaptor.commands.map(function(cmd) {
-        expect(cmd).to.be.a('string');
+        expect(cmd).to.be.a("string");
       });
     });
   });
 
-  describe('digitalWrite', function() {
+  describe("digitalWrite", function() {
     var callback, res;
 
     beforeEach(function(){
       res = { on: stub() };
       callback = spy();
 
-      stub(rest, 'get').returns(res);
-      res.on.yields('success', 'response');
+      stub(rest, "get").returns(res);
+      res.on.yields("success", "response");
 
       adaptor.digitalWrite(1, 1, callback);
     });
@@ -95,51 +97,53 @@ describe("Cylon.Adaptors.Imp", function() {
     });
 
     it("should make a GET HTTP request to agentUrl address", function() {
-      expect(rest.get).to.be.calledWith('https://agent.electricimp.com/123456789');
+      var url = "https://agent.electricimp.com/123456789";
+      expect(rest.get).to.be.calledWith(url);
     });
 
     it("should pass the correct parameters", function() {
       var params = {
         query: {
-          mode: 'digitalWrite',
+          mode: "digitalWrite",
           pin: 1,
           value: 1,
           period: null
         }
       };
 
-      expect(rest.get).to.be.calledWith('https://agent.electricimp.com/123456789', params);
+      var url = "https://agent.electricimp.com/123456789";
+      expect(rest.get).to.be.calledWith(url, params);
     });
 
     it("calls the callback on success", function() {
-      expect(callback).to.be.calledWith(null, 'success');
+      expect(callback).to.be.calledWith(null, "success");
     });
 
-    context('if the call returns an error', function() {
-      var error = new Error('error');
+    context("if the call returns an error", function() {
+      var error = new Error("error");
 
       beforeEach(function() {
         adaptor.emit = spy();
-        res.on.yield(error, 'error');
+        res.on.yield(error, "error");
       });
 
       it("triggers an error event", function() {
-        expect(adaptor.emit).to.be.calledWith('error', error);
+        expect(adaptor.emit).to.be.calledWith("error", error);
       });
     });
   });
 
-  describe('digitalRead', function() {
+  describe("digitalRead", function() {
     var callback, res;
 
     beforeEach(function(){
       res = { on: stub() };
       callback = spy();
 
-      stub(rest, 'get').returns(res);
-      res.on.yields('{ "data": 1 }', null);
+      stub(rest, "get").returns(res);
+      res.on.yields("{ \"data\": 1 }", null);
 
-      stub(Cylon.Utils, 'every').yields();
+      stub(Cylon.Utils, "every").yields();
       adaptor.digitalRead(1, callback);
     });
 
@@ -152,18 +156,19 @@ describe("Cylon.Adaptors.Imp", function() {
       expect(Cylon.Utils.every).to.be.calledWith(adaptor.readInterval);
     });
 
-    it("should make a GET HTTP request to agentUrl with correct params", function() {
+    it("should make a GET HTTP request to agentUrl with params", function() {
       var params = {
         query: {
-          mode: 'digitalRead',
+          mode: "digitalRead",
           pin: 1
         }
       };
 
-      expect(rest.get).to.be.calledWith('https://agent.electricimp.com/123456789', params);
+      var url = "https://agent.electricimp.com/123456789";
+      expect(rest.get).to.be.calledWith(url, params);
     });
 
-    it("doesn't make new requests if the current one hasn't finished", function() {
+    it("doesn't make new requests if current one hasn't finished", function() {
       expect(rest.get).to.be.calledOnce;
     });
 
@@ -173,13 +178,13 @@ describe("Cylon.Adaptors.Imp", function() {
       });
 
       it("triggers the callback with the error", function() {
-        res.on.callsArgWith(1, '{ "data": 1 }', null);
+        res.on.callsArgWith(1, "{ \"data\": 1 }", null);
         expect(callback).to.be.calledWith(null, 1);
       });
     });
 
     context("if #digitalread request returns an error", function() {
-      var error = new Error('error');
+      var error = new Error("error");
 
       beforeEach(function() {
         adaptor.emit = spy();
@@ -187,22 +192,22 @@ describe("Cylon.Adaptors.Imp", function() {
       });
 
       it("triggers an error event", function() {
-        expect(adaptor.emit).to.be.calledWith('error', error);
+        expect(adaptor.emit).to.be.calledWith("error", error);
       });
     });
   });
 
-  describe('analogRead', function() {
+  describe("analogRead", function() {
     var callback, res;
 
     beforeEach(function(){
       res = { on: stub() };
       callback = spy();
 
-      stub(rest, 'get').returns(res);
-      res.on.yields('{ "data": 32000 }', null);
+      stub(rest, "get").returns(res);
+      res.on.yields("{ \"data\": 32000 }", null);
 
-      stub(Cylon.Utils, 'every').yields();
+      stub(Cylon.Utils, "every").yields();
 
       adaptor.analogRead(1, callback);
     });
@@ -216,18 +221,19 @@ describe("Cylon.Adaptors.Imp", function() {
       expect(Cylon.Utils.every).to.be.calledWith(adaptor.readInterval);
     });
 
-    it("should make a GET HTTP request to agentUrl with correct params", function() {
+    it("should make a GET HTTP request to agentUrl with params", function() {
       var params = {
         query: {
-          mode: 'analogRead',
+          mode: "analogRead",
           pin: 1
         }
       };
 
-      expect(rest.get).to.be.calledWith('https://agent.electricimp.com/123456789', params);
+      var url = "https://agent.electricimp.com/123456789";
+      expect(rest.get).to.be.calledWith(url, params);
     });
 
-    it("doesn't make new requests if the current one hasn't finished", function() {
+    it("doesn't make new requests if current one hasn't finished", function() {
       expect(rest.get).to.be.calledOnce;
     });
 
@@ -237,13 +243,13 @@ describe("Cylon.Adaptors.Imp", function() {
       });
 
       it("triggers the callback with the error", function() {
-        res.on.yield('{ "data": 1 }', null);
+        res.on.yield("{ \"data\": 1 }", null);
         expect(callback).to.be.calledWith(null, 1);
       });
     });
 
     context("if #digitalread request returns an error", function() {
-      var error = new Error('error');
+      var error = new Error("error");
 
       beforeEach(function() {
         adaptor.emit = spy();
@@ -251,19 +257,19 @@ describe("Cylon.Adaptors.Imp", function() {
       });
 
       it("triggers an error event", function() {
-        expect(adaptor.emit).to.be.calledWith('error', error);
+        expect(adaptor.emit).to.be.calledWith("error", error);
       });
     });
   });
 
-  describe('#pwmWrite', function() {
+  describe("#pwmWrite", function() {
     var callback;
 
     beforeEach(function(){
       var res = { on: spy() };
       callback = spy();
 
-      stub(rest, 'get').returns(res);
+      stub(rest, "get").returns(res);
 
       adaptor.pwmWrite(1, 0.5, null, callback);
     });
@@ -273,45 +279,48 @@ describe("Cylon.Adaptors.Imp", function() {
     });
 
     it("should make a GET HTTP request to agentUrl address", function() {
-      expect(rest.get).to.be.calledWith('https://agent.electricimp.com/123456789');
+      var url = "https://agent.electricimp.com/123456789";
+      expect(rest.get).to.be.calledWith(url);
     });
 
     it("should pass the correct parameters", function() {
       var params = {
         query: {
-          mode: 'pwmWrite',
+          mode: "pwmWrite",
           pin: 1,
           period: 0.002,
           value: 0.5
         }
       };
 
-      expect(rest.get).to.be.calledWith('https://agent.electricimp.com/123456789', params);
+      var url = "https://agent.electricimp.com/123456789";
+      expect(rest.get).to.be.calledWith(url, params);
     });
 
     it("sets a default period", function() {
       var params = {
         query: {
-          mode: 'pwmWrite',
+          mode: "pwmWrite",
           pin: 1,
           period: 0.002,
           value: 0.5
         }
       };
 
-      expect(rest.get).to.be.calledWith('https://agent.electricimp.com/123456789', params);
+      var url = "https://agent.electricimp.com/123456789";
+      expect(rest.get).to.be.calledWith(url, params);
     });
   });
 
-  describe('#servoWrite', function() {
+  describe("#servoWrite", function() {
     var callback;
 
     beforeEach(function(){
       var res = { on: spy() };
       callback = spy();
 
-      stub(rest, 'get').returns(res);
-      spy(adaptor, 'pwmWrite');
+      stub(rest, "get").returns(res);
+      spy(adaptor, "pwmWrite");
 
       adaptor.servoWrite(1, 0.5, null, callback);
     });
@@ -322,7 +331,8 @@ describe("Cylon.Adaptors.Imp", function() {
     });
 
     it("should make a GET HTTP request to agentUrl address", function() {
-      expect(rest.get).to.be.calledWith('https://agent.electricimp.com/123456789');
+      var url = "https://agent.electricimp.com/123456789";
+      expect(rest.get).to.be.calledWith(url);
     });
 
     it("should pass the correct parameters", function() {
@@ -331,14 +341,14 @@ describe("Cylon.Adaptors.Imp", function() {
     });
   });
 
-  describe('#analogWrite', function() {
+  describe("#analogWrite", function() {
     var callback, res;
 
     beforeEach(function(){
       res = { on: spy() };
       callback = spy();
 
-      stub(rest, 'get').returns(res);
+      stub(rest, "get").returns(res);
 
       adaptor.analogWrite(1, 0.5, callback);
     });
@@ -348,44 +358,46 @@ describe("Cylon.Adaptors.Imp", function() {
     });
 
     it("should make a GET HTTP request to agentUrl address", function() {
-      expect(rest.get).to.be.calledWith('https://agent.electricimp.com/123456789');
+      var url = "https://agent.electricimp.com/123456789";
+      expect(rest.get).to.be.calledWith(url);
     });
 
     it("should pass the correct parameters", function() {
       var params = {
         query: {
-          mode: 'analogWrite',
+          mode: "analogWrite",
           pin: 1,
           value: 0.5,
           period: null
         }
       };
 
-      expect(rest.get).to.be.calledWith('https://agent.electricimp.com/123456789', params);
+      var url = "https://agent.electricimp.com/123456789";
+      expect(rest.get).to.be.calledWith(url, params);
     });
 
-    context('if the call returns an error', function() {
-      var error = new Error('error');
+    context("if the call returns an error", function() {
+      var error = new Error("error");
 
       beforeEach(function() {
         adaptor.emit = spy();
-        res.on.yield(error, 'error');
+        res.on.yield(error, "error");
       });
 
       it("triggers an error event", function() {
-        expect(adaptor.emit).to.be.calledWith('error', error);
+        expect(adaptor.emit).to.be.calledWith("error", error);
       });
     });
   });
 
-  describe('#i2cWrite', function() {
+  describe("#i2cWrite", function() {
     var callback, res;
 
     beforeEach(function(){
       res = { on: stub() };
       callback = spy();
 
-      stub(rest, 'get').returns(res);
+      stub(rest, "get").returns(res);
       res.on.yields({ data: 1 }, null);
 
       adaptor.i2cWrite(0x09, 0xfe, [0xaa, 0xbb, 0xcc], callback);
@@ -396,52 +408,54 @@ describe("Cylon.Adaptors.Imp", function() {
     });
 
     it("should make a GET HTTP request to agentUrl address", function() {
-      expect(rest.get).to.be.calledWith('https://agent.electricimp.com/123456789');
+      var url = "https://agent.electricimp.com/123456789";
+      expect(rest.get).to.be.calledWith(url);
     });
 
     it("should pass the correct parameters", function() {
       var params = {
         query: {
-          mode: 'i2cWrite',
+          mode: "i2cWrite",
           address: 0x09,
-          buffer: [0xfe, 0xaa, 0xbb, 0xcc].join(',')
+          buffer: [0xfe, 0xaa, 0xbb, 0xcc].join(",")
         }
       };
 
-      expect(rest.get).to.be.calledWith('https://agent.electricimp.com/123456789', params);
+      var url = "https://agent.electricimp.com/123456789";
+      expect(rest.get).to.be.calledWith(url, params);
     });
 
-    context('if the call returns data', function() {
+    context("if the call returns data", function() {
       it("triggers an error event", function() {
         expect(callback).to.be.calledOnce;
       });
     });
 
-    context('if the call returns an error', function() {
-      var error = new Error('error');
+    context("if the call returns an error", function() {
+      var error = new Error("error");
 
       beforeEach(function() {
         adaptor.emit = spy();
-        res.on.yield(error, 'error');
+        res.on.yield(error, "error");
       });
 
       it("triggers an error event", function() {
-        expect(adaptor.emit).to.be.calledWith('error', error);
+        expect(adaptor.emit).to.be.calledWith("error", error);
       });
     });
   });
 
-  describe('i2cRead', function() {
+  describe("i2cRead", function() {
     var callback, res;
 
     beforeEach(function(){
       res = { on: stub() };
       callback = spy();
 
-      stub(rest, 'get').returns(res);
-      res.on.yields('{ "data": 1023 }', null);
+      stub(rest, "get").returns(res);
+      res.on.yields("{ \"data\": 1023 }", null);
 
-      stub(Cylon.Utils, 'every').yields();
+      stub(Cylon.Utils, "every").yields();
 
       adaptor.i2cRead(0x09, 0xf1, 3, callback);
     });
@@ -451,17 +465,18 @@ describe("Cylon.Adaptors.Imp", function() {
       rest.get.restore();
     });
 
-    it("should make a GET HTTP request to agentUrl with correct params", function() {
+    it("should make a GET HTTP request to agentUrl with params", function() {
       var params = {
         query: {
-          mode: 'i2cRead',
+          mode: "i2cRead",
           address: 0x09,
           buffer:0xf1,
           bytes: 3
         }
       };
 
-      expect(rest.get).to.be.calledWith('https://agent.electricimp.com/123456789', params);
+      var url = "https://agent.electricimp.com/123456789";
+      expect(rest.get).to.be.calledWith(url, params);
     });
 
     context("if #digitalRead returns a value", function() {
@@ -470,13 +485,13 @@ describe("Cylon.Adaptors.Imp", function() {
       });
 
       it("triggers the callback with the error", function() {
-        res.on.yield('{ "data": 1 }', null);
+        res.on.yield("{ \"data\": 1 }", null);
         expect(callback).to.be.calledWith(null, 1);
       });
     });
 
     context("if #digitalread request returns an error", function() {
-      var error = new Error('error');
+      var error = new Error("error");
 
       beforeEach(function() {
         adaptor.emit = spy();
@@ -484,7 +499,7 @@ describe("Cylon.Adaptors.Imp", function() {
       });
 
       it("triggers an error event", function() {
-        expect(adaptor.emit).to.be.calledWith('error', error);
+        expect(adaptor.emit).to.be.calledWith("error", error);
       });
     });
   });
