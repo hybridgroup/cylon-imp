@@ -1,6 +1,6 @@
 {
   "name": "cylon-imp",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "main": "lib/cylon-imp.js",
   "description": "Cylon module for the Electric Imp",
   "homepage": "http://cylonjs.com",
@@ -27,13 +27,14 @@
   },
 
   "peerDependencies": {
-    "cylon": ">=0.21.1 < 1"
+    "cylon": ">=0.22.0 < 1",
+    "cylon-gpio": ">= 0.22.0 < 1"
   },
 
   "dependencies": {
     "coveralls": "^2.11.2",
-    "cylon": ">= 0.21.2 < 1",
-    "cylon-gpio": ">= 0.20.0 < 1",
+    "cylon": ">= 0.22.0 < 1",
+    "cylon-gpio": ">= 0.22.0 < 1",
     "restler": ">= 3.2.2"
   }
 }
