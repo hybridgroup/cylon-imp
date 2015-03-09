@@ -13,7 +13,7 @@ https://github.com/hybridgroup/cylon
 
 Install the module with:
 
-    $ npm install cylon-imp
+    $ npm install cylon cylon-imp
 
 You'll also need to setup your Imp, for this you can go here: [Electric Imp Getting Started](https://electricimp.com/docs/gettingstarted/)
 
