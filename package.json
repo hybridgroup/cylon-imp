@@ -26,11 +26,6 @@
     "sinon": "1.10.3"
   },
 
-  "peerDependencies": {
-    "cylon": ">=0.22.0 < 1",
-    "cylon-gpio": ">= 0.22.0 < 1"
-  },
-
   "dependencies": {
     "coveralls": "^2.11.2",
     "cylon": ">= 0.22.0 < 1",
