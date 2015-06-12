@@ -11,12 +11,12 @@ Cylon.robot({
   },
 
   devices: {
-    bmp180: { driver:"bmp180" }
+    bmp180: { driver: "bmp180" }
   },
 
   work: function(my) {
     my.bmp180.getTemperature(function(err, val) {
-      if(err) {
+      if (err) {
         console.log(err);
       } else {
         console.log("getTemperature call:");
@@ -27,7 +27,7 @@ Cylon.robot({
     after((1).seconds(), function() {
       console.log("reading pressure --->");
       my.bmp180.getPressure(1, function(err, val) {
-        if(err) {
+        if (err) {
           console.log(err);
         } else {
           console.log("getPressure call:");
@@ -39,7 +39,7 @@ Cylon.robot({
 
     after((2).seconds(), function() {
       my.bmp180.getAltitude(1, null, function(err, val) {
-        if(err) {
+        if (err) {
           console.log(err);
         } else {
           console.log("getAltitude call:");
@@ -52,7 +52,7 @@ Cylon.robot({
 
     every(2000, function() {
       my.bmp180.getAltitude(1, null, function(err, val) {
-        if(err) {
+        if (err) {
           console.log(err);
         } else {
           console.log("getAltitude call:");

@@ -1,9 +1,8 @@
-// jshint expr:true
 "use strict";
 
-var imp = source("cylon-imp");
+var imp = lib("cylon-imp");
 
-var Adaptor = source("adaptor");
+var Adaptor = lib("adaptor");
 
 describe("Cylon.Imp", function() {
   describe("#adaptors", function() {

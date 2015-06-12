@@ -1,10 +1,9 @@
-// jshint expr:true
 "use strict";
 
-var Cylon = require("cylon");
-
-var Adaptor = source("adaptor"),
+var Cylon = require("cylon"),
     rest = require("restler");
+
+var Adaptor = lib("adaptor");
 
 describe("Cylon.Adaptors.Imp", function() {
   var adaptor;
@@ -19,7 +18,7 @@ describe("Cylon.Adaptors.Imp", function() {
   describe("#constructor", function() {
     var error = "No agentUrl provided for Imp adaptor. Cannot proceed";
 
-    it("sets @agentUrl to the provided value", function(){
+    it("sets @agentUrl to the provided value", function() {
       var url = "https://agent.electricimp.com/123456789";
       expect(adaptor.agentUrl).to.be.eql(url);
     });
@@ -82,7 +81,7 @@ describe("Cylon.Adaptors.Imp", function() {
   describe("digitalWrite", function() {
     var callback, res;
 
-    beforeEach(function(){
+    beforeEach(function() {
       res = { on: stub() };
       callback = spy();
 
@@ -136,7 +135,7 @@ describe("Cylon.Adaptors.Imp", function() {
   describe("digitalRead", function() {
     var callback, res;
 
-    beforeEach(function(){
+    beforeEach(function() {
       res = { on: stub() };
       callback = spy();
 
@@ -200,7 +199,7 @@ describe("Cylon.Adaptors.Imp", function() {
   describe("analogRead", function() {
     var callback, res;
 
-    beforeEach(function(){
+    beforeEach(function() {
       res = { on: stub() };
       callback = spy();
 
@@ -265,7 +264,7 @@ describe("Cylon.Adaptors.Imp", function() {
   describe("#pwmWrite", function() {
     var callback;
 
-    beforeEach(function(){
+    beforeEach(function() {
       var res = { on: spy() };
       callback = spy();
 
@@ -315,7 +314,7 @@ describe("Cylon.Adaptors.Imp", function() {
   describe("#servoWrite", function() {
     var callback;
 
-    beforeEach(function(){
+    beforeEach(function() {
       var res = { on: spy() };
       callback = spy();
 
@@ -344,7 +343,7 @@ describe("Cylon.Adaptors.Imp", function() {
   describe("#analogWrite", function() {
     var callback, res;
 
-    beforeEach(function(){
+    beforeEach(function() {
       res = { on: spy() };
       callback = spy();
 
@@ -393,7 +392,7 @@ describe("Cylon.Adaptors.Imp", function() {
   describe("#i2cWrite", function() {
     var callback, res;
 
-    beforeEach(function(){
+    beforeEach(function() {
       res = { on: stub() };
       callback = spy();
 
@@ -448,7 +447,7 @@ describe("Cylon.Adaptors.Imp", function() {
   describe("i2cRead", function() {
     var callback, res;
 
-    beforeEach(function(){
+    beforeEach(function() {
       res = { on: stub() };
       callback = spy();
 
@@ -470,7 +469,7 @@ describe("Cylon.Adaptors.Imp", function() {
         query: {
           mode: "i2cRead",
           address: 0x09,
-          buffer:0xf1,
+          buffer: 0xf1,
           bytes: 3
         }
       };
