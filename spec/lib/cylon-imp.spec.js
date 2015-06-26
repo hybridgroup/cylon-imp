@@ -1,6 +1,6 @@
 "use strict";
 
-var imp = lib("cylon-imp");
+var imp = lib("../");
 
 var Adaptor = lib("adaptor");
 

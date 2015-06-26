@@ -1,7 +1,6 @@
 {
   "name": "cylon-imp",
   "version": "0.3.0",
-  "main": "lib/cylon-imp.js",
   "description": "Cylon module for the Electric Imp",
   "homepage": "http://cylonjs.com",
   "bugs": "http://cylonjs.com/hybridgroup/cylon-imp/issues",

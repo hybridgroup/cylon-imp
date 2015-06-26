@@ -1,14 +1,6 @@
-/*
- * cylon-imp
- * http://cylonjs.com
- *
- * Copyright (c) 2014 Your Name Here
- * Your License Here
-*/
-
 "use strict";
 
-var Adaptor = require("./adaptor");
+var Adaptor = require("./lib/adaptor");
 
 module.exports = {
   adaptors: ["imp"],
